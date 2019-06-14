@@ -13,7 +13,7 @@ module ActiveHashRelation::AssociationFilters
         if self.configuration.has_filter_classes
           if self.configuration.use_unscoped
             association_filters = self.filter_class(association_name).new(
-              association_name.singularize.constantize.unscoped.all,
+              association.class_name.constantize.unscoped.all,
               params[association]
             ).apply_filters
           else
