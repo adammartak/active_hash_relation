@@ -31,7 +31,7 @@ module ActiveHashRelation::AssociationFilters
             ).apply_filters
           else
             association_filters = ActiveHashRelation::FilterApplier.new(
-              association_name.singularize.constantize.all,
+              association.class_name.constantize.unscoped.all,
               params[association],
               include_associations: true
             ).apply_filters
