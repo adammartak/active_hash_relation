@@ -13,7 +13,7 @@ module ActiveHashRelation::AssociationFilters
         if self.configuration.has_filter_classes
           if self.configuration.use_unscoped
             association_filters = self.filter_class(association_name).new(
-              association.class_name.constantize.unscoped.all,
+              model.reflect_on_association(association).class_name.constantize.unscoped.all,
               params[association]
             ).apply_filters
           else
@@ -25,7 +25,7 @@ module ActiveHashRelation::AssociationFilters
         else
           if self.configuration.use_unscoped
             association_filters = ActiveHashRelation::FilterApplier.new(
-              association_name.singularize.constantize.unscoped.all,
+              model.reflect_on_association(association).class_name.constantize.unscoped.all,
               params[association],
               include_associations: true
             ).apply_filters
