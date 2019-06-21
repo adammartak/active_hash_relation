@@ -3,6 +3,45 @@ describe ActiveHashRelation do
 
   context 'associations' do
     context 'has_many' do
+      it "one where clause with scope" do
+        hash = { translations: { title: 'Sveavägen 4' }}
+
+        query = HelperClass.new.apply_filters(Post.published, hash, include_associations: true).to_sql
+        expected_query = q(
+          "SELECT posts.* FROM posts",
+          "INNER JOIN post_translations ON post_translations.post_id = posts.id",
+          "WHERE posts.published = 't' AND (post_translations.title = 'Sveavägen 4')"
+        )
+
+        expect(strip(query)).to eq expected_query.to_s
+      end
+
+      it "one where clause" do
+        hash = { translations: { title: 'Sveavägen 4' }}
+
+        query = HelperClass.new.apply_filters(Post.all, hash, include_associations: true).to_sql
+        expected_query = q(
+          "SELECT posts.* FROM posts",
+          "INNER JOIN post_translations ON post_translations.post_id = posts.id",
+          "WHERE (post_translations.title = 'Sveavägen 4')"
+        )
+
+        expect(strip(query)).to eq expected_query.to_s
+      end
+
+      it "one where clause" do
+        hash = { translations: { title: { like: 'Sveavägen 4' }}}
+
+        query = HelperClass.new.apply_filters(Post.all, hash, include_associations: true).to_sql
+        expected_query = q(
+          "SELECT posts.* FROM posts",
+          "INNER JOIN post_translations ON post_translations.post_id = posts.id",
+          "WHERE (post_translations.title LIKE '%Sveavägen 4%')"
+        )
+
+        expect(strip(query)).to eq expected_query.to_s
+      end
+
       it "one where clause" do
         hash = {microposts: {content: 'Sveavägen 4' }}
 
@@ -87,5 +126,3 @@ describe ActiveHashRelation do
     end
   end
 end
-
-

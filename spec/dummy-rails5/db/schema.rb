@@ -36,6 +36,25 @@ ActiveRecord::Schema.define(version: 1) do
     t.index ["user_id"], name: "index_microposts_on_user_id", using: :btree
   end
 
+  create_table "post_translations", force: :cascade do |t|
+    t.integer  "post_id",    null: false
+    t.string   "locale",     null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "title"
+    t.text     "content"
+    t.index ["locale"], name: "index_post_translations_on_locale", using: :btree
+    t.index ["post_id"], name: "index_post_translations_on_post_id", using: :btree
+  end
+
+  create_table "posts", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.boolean  "published",  default: false, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.index ["user_id"], name: "index_posts_on_user_id", using: :btree
+  end
+
   create_table "relationships", force: :cascade do |t|
     t.integer  "follower_id"
     t.integer  "followed_id"
@@ -61,4 +80,5 @@ ActiveRecord::Schema.define(version: 1) do
   end
 
   add_foreign_key "microposts", "users"
+  add_foreign_key "posts", "users"
 end

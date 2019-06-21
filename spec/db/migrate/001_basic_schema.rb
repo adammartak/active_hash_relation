@@ -1,5 +1,16 @@
 class BasicSchema < ActiveRecord::Migration
   def change
+    create_table "posts", force: :cascade do |t|
+      t.integer  "user_id", null: false
+      t.boolean  "published", null: false, default: false
+
+      t.timestamps null: false
+
+      t.index ["user_id"], name: "index_posts_on_user_id", using: :btree
+    end
+
+    Post.create_translation_table! title: :string, content: :text
+
     create_table "microposts", force: :cascade do |t|
       t.text     "content", null: false
       t.integer  "user_id", null: false
@@ -49,5 +60,6 @@ class BasicSchema < ActiveRecord::Migration
     end
 
     add_foreign_key "microposts", "users"
+    add_foreign_key "posts", "users"
   end
 end

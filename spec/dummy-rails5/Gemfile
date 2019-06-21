@@ -16,4 +16,6 @@ group :development, :test do
   gem 'listen'
 end
 
+gem 'globalize'
 gem 'active_hash_relation', path: '../../'
+

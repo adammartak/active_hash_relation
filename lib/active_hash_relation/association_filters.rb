@@ -10,30 +10,33 @@ module ActiveHashRelation::AssociationFilters
     model.reflect_on_all_associations.map(&:name).each do |association|
       if params[association]
         association_name = association.to_s.titleize.split.join
+        model_class = model.reflect_on_association(association).class_name.constantize
         if self.configuration.has_filter_classes
           if self.configuration.use_unscoped
             association_filters = self.filter_class(association_name).new(
-              model.reflect_on_association(association).class_name.constantize.unscoped.all,
+              model_class.unscoped.all,
               params[association]
             ).apply_filters
           else
             association_filters = self.filter_class(association_name).new(
-              model.reflect_on_association(association).class_name.constantize.all,
+              model_class.all,
               params[association]
             ).apply_filters
           end
         else
           if self.configuration.use_unscoped
             association_filters = ActiveHashRelation::FilterApplier.new(
-              model.reflect_on_association(association).class_name.constantize.unscoped.all,
+              model_class.unscoped.all,
               params[association],
-              include_associations: true
+              include_associations: true,
+              model: model_class
             ).apply_filters
           else
             association_filters = ActiveHashRelation::FilterApplier.new(
-              model.reflect_on_association(association).class_name.constantize.all,
+              model_class.all,
               params[association],
-              include_associations: true
+              include_associations: true,
+              model: model_class
             ).apply_filters
           end
         end
